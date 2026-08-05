@@ -1,30 +1,27 @@
-# 物品管家 PWA
+# 物品管家 PWA（Supabase 云同步版）
 
-一个纯静态、可安装到手机桌面的家庭物品整理工具。
+保留原有物品、分类、数量、保质期、临期与低库存提醒，并加入邮箱登录和跨设备同步。未登录时仍可在本机使用。
 
-## 功能
+## 1. 配置 Supabase
 
-- 分类、搜索、存放位置
-- 自定义新增、重命名和删除分类
-- 数量增减与最低库存提醒
-- 生产日期、保质期天数、过期日期
-- 临期、过期和补货提示
-- JSON 数据导入与导出
-- 本机保存与离线访问
+1. 打开你与“衣橱簿”“轻盈轨迹”共用的 Supabase Project。
+2. 进入 `SQL Editor → New query`。
+3. 打开本包的 `supabase-setup.sql`，复制全部内容并点击 `Run`。
+4. 回到 `Table Editor` 刷新，应看到 `item_manager_items` 和 `item_manager_settings`。
+5. 从 `Project Settings → API`（部分新版界面为 `Connect`）复制 `Project URL` 与 `Publishable key`；旧版项目也可使用 `anon public key`。
 
-## GitHub Pages 部署
+请勿把 `service_role`、Secret key 或数据库密码填入网页。
 
-1. 在 GitHub 新建公开仓库，例如 `item-keeper-pwa`。
-2. 将本文件夹中的全部文件上传到仓库根目录。
-3. 打开 `Settings → Pages`。
-4. 在 `Build and deployment` 中选择 `Deploy from a branch`。
-5. Branch 选择 `main`，Folder 选择 `/(root)`，然后保存。
-6. 等待 GitHub 显示 `Your site is live at`。
+## 2. 部署 GitHub Pages
 
-网站地址通常是：
+把本文件夹中的全部文件上传并覆盖原 GitHub 仓库根目录，然后提交。若发布后仍显示旧版，请关闭网页后重新打开，或清理该网站缓存一次。
 
-`https://你的用户名.github.io/item-keeper-pwa/`
+## 3. 首次登录和迁移
 
-## 数据说明
+1. 打开物品管家 → 设置。
+2. 填写 Project URL 与 Publishable/anon key，点击“保存并连接”。
+3. 输入邮箱和密码注册；若 Supabase 开启邮箱验证，请到邮箱确认。
+4. 登录后，如果云端为空，当前浏览器的旧物品、分类和提醒天数会自动迁移。
+5. 其他设备填写同一套公开参数并登录同一账号，即可看到相同数据。
 
-数据保存在当前浏览器的 localStorage 中，不会自动上传到 GitHub。更换手机、浏览器或网站域名之前，请先在“设置”中导出 JSON 备份。
+`item_manager_items` 保存物品信息；`item_manager_settings` 保存分类和提醒天数。两张表均启用 RLS，每个账号只能访问自己的数据。本项目不保存图片，无需创建 Storage bucket。建议仍定期导出 JSON 备份。
